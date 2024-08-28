@@ -109,7 +109,7 @@ command: []
 
 ## Overrides the default args for the Keycloak container
 args:
-  - "start"
+  - "start-dev"
 
 # Additional environment variables for Keycloak
 extraEnv: ""
