@@ -543,3 +543,5 @@ azure:
     enabled: false
   workloadid:
     enabled: false
+  csi:
+    enabled: false
