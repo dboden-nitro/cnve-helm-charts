@@ -105,10 +105,11 @@ terminationGracePeriodSeconds: 60
 clusterDomain: cluster.local
 
 ## Overrides the default entrypoint of the Keycloak container
-command: ["start-dev"]
+command: []
 
 ## Overrides the default args for the Keycloak container
-args: []
+args:
+  - "start"
 
 # Additional environment variables for Keycloak
 extraEnv: ""
