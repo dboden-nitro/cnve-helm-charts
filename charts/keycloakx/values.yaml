@@ -112,9 +112,9 @@ args:
   - "start-dev"
 
 # Additional environment variables for Keycloak
-extraEnv: ""
-  # - name: KC_LOG_LEVEL
-  #   value: DEBUG
+extraEnv: |
+  - name: JAVA_OPTS_APPEND
+    value: "-Djgroups.dns.query=keycloak-headless"
 
 # Additional environment variables for Keycloak mapped from Secret or ConfigMap
 extraEnvFrom: ""
