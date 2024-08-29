@@ -1,5 +1,34 @@
 apiVersion: v1
 entries:
+  keycloakx:
+  - apiVersion: v2
+    appVersion: 22.0.4
+    created: "2024-08-29T06:04:07.5666534Z"
+    description: Keycloak.X - Open Source Identity and Access Management for Modern
+      Applications and Services
+    digest: c98aa5bf39cd2a746618e8ed398a842827688bea0bc35da2e3996aef5f78c638
+    home: https://www.keycloak.org/
+    icon: https://www.keycloak.org/resources/images/keycloak_logo_200px.svg
+    keywords:
+    - sso
+    - idm
+    - openid connect
+    - saml
+    - kerberos
+    - oauth
+    - ldap
+    - keycloakx
+    - quarkus
+    maintainers:
+    - email: thomas.darimont+github@gmail.com
+      name: thomasdarimont
+    name: keycloakx
+    sources:
+    - https://github.com/codecentric/helm-charts
+    - https://github.com/keycloak/keycloak/tree/main/quarkus/container
+    urls:
+    - https://github.com/dboden-nitro/cnve-helm-charts/releases/download/keycloakx-2.3.0/keycloakx-2.3.0.tgz
+    version: 2.3.0
   test-app1:
   - apiVersion: v2
     appVersion: 1.27.1
@@ -28,4 +57,4 @@ entries:
     urls:
     - https://github.com/dboden-nitro/cnve-helm-charts/releases/download/test-app2-0.1.0/test-app2-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-28T11:20:49.082059622Z"
+generated: "2024-08-29T06:04:07.566665062Z"
