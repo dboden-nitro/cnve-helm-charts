@@ -4,3 +4,7 @@ description: A Helm chart for Kubernetes
 type: application
 version: 0.3.0
 appVersion: 1.1.1
+maintainers:
+  - name: dboden-nitro
+    email: dieter.boden@gonitro.com
+
