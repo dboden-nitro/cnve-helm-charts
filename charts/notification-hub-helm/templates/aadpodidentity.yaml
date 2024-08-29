@@ -1,0 +1,16 @@
+{{- if .Values.azure.aad.enabled }}
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  name: {{ .Values.azure.aad.identityname }}
+  labels:
+    {{- include "notification-hub.labels" . | nindent 4 }}
+  {{- if .Values.azure.aad.namespace }}
+  namespace: {{ .Values.azure.aad.namespace }}
+  {{- end }}
+
+spec:
+  type: {{ .Values.azure.aad.identitytype }}
+  resourceID: {{ .Values.azure.aad.identiyresourceid }}
+  clientID: {{ .Values.azure.aad.identityclientid }}
+{{- end }}

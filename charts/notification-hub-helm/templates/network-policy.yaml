@@ -1,0 +1,25 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: "networking.k8s.io/v1"
+kind: NetworkPolicy
+metadata:
+  name:  {{ template "notification-hub.fullname" . }}-networkpolicy
+  labels:
+    {{- include "notification-hub.labels" . | nindent 4 }}
+
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "notification-hub.name" . }}
+  {{- if .Values.networkPolicy.ingress.enabled }}
+  ingress: 
+  - ports:
+    - port: http
+      protocol: TCP
+    - port: https
+      protocol: TCP
+    from: {{ .Values.networkPolicy.ingress.fromContent | nindent 4 }}
+  {{- end }}
+  {{- if .Values.networkPolicy.egress.enabled }}
+  egress: {{ .Values.networkPolicy.egress }}
+  {{- end }}
+{{- end }}

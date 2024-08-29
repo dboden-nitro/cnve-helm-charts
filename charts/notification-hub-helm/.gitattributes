@@ -1,0 +1,11 @@
+* text=lf
+*.ps1 text eol=auto
+.helmignore text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.crt text eol=lf
+*.key text eol=lf
+*.txt text eol=lf
+*.tpl text eol=lf
+*.lock text eol=lf

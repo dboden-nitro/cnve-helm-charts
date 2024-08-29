@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "notification-hub.fullname" . }}
+  labels:
+    {{- include "notification-hub.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "notification-hub.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        checksum/network-policy: {{ include (print .Template.BasePath "/network-policy.yaml") . | sha256sum }}
+        checksum/serilog-config: {{ include (print .Template.BasePath "/configmap-serilog.yaml") . | sha256sum }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "notification-hub.selectorLabels" . | nindent 8 }}
+        {{- if .Values.azure.aad.enabled }}
+        aadpodidbinding: {{ .Values.azure.aad.identityselector }}
+        {{- end }}
+        {{- if .Values.azure.workloadid.enabled }}
+        azure.workload.identity/use: "true"
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "notification-hub.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 300
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env: {{- include "notification-hub.env" . | indent 12 }} 
+          volumeMounts:
+            - name: secrets
+              mountPath: /var/lib/secrets
+              readOnly: true
+            - name: "serilog"
+              mountPath: "/app/serilog.config"
+              subPath: "serilog.config"
+            {{- if .Values.overrideTemplateSeedData }}
+            - name: "templateseeddata"
+              mountPath: "/app/TemplateSeedData/HandlebarsContentRenderer.Plugin.HandlebarsMessageContentRenderer"
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ .Values.azure.csi.secretproviderclass }}
+        - name: serilog
+          configMap:
+            name: {{ include "notification-hub.fullname" . }}-serilog-config
+        {{- if .Values.overrideTemplateSeedData }}
+        - name: templateseeddata
+          configMap:
+            name: {{ include "notification-hub.fullname" . }}-templateseeddata
+        {{- end }}
