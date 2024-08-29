@@ -1,0 +1,14 @@
+{{- if .Values.azure.aad.enabled }}
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+  name: {{ .Values.azure.aad.identitybindingname }}
+  labels:
+    {{- include "notification-hub.labels" . | nindent 4 }}
+  {{- if .Values.azure.aad.namespace }}
+  namespace: {{ .Values.azure.aad.namespace }}
+  {{- end }}
+spec:
+  azureIdentity: {{ .Values.azure.aad.identityname }}
+  selector: {{ .Values.azure.aad.identityselector }}
+{{- end }}
